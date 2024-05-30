@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 
-Route::group(['prefix' => 'users'], function () {
+Route::group(['prefix' => 'users', 'middleware' => ['throttle:1,1']], function () {
     Route::get('/', [UserController::class, 'index']);
     Route::post('/create', [UserController::class, 'store']);
     Route::post('/login', [UserController::class, 'login']);
@@ -11,7 +11,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::delete('/delete', [UserController::class, 'delete']);
 });
 
-Route::group(['prefix' => 'posts'], function () {
+Route::group(['prefix' => 'posts', 'middleware' => ['throttle:1,1']], function () {
     Route::get('/', [PostController::class, 'index']);
     Route::get('/search', [PostController::class, 'search']);
     Route::post('/create', [PostController::class, 'create']);
