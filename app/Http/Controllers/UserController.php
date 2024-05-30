@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Contracts\Services\UserService\UserServiceInterface;
 
 final class UserController extends Controller
@@ -26,15 +27,19 @@ final class UserController extends Controller
     {
         $name = $request->header('name');
         $email = $request->header('email');
-        $password = $request->header('password');
+        $password = Hash::make($request->header('password'));
 
         $user = $this->userService->create($name, $email, $password);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return new JsonResponse([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'created_at' => $user->created_at->format('d/m/Y H:i:s')
+            'created_at' => $user->created_at->format('d/m/Y H:i:s'),
+            'access_token' => $token,
+            'token_type' => 'Bearer'
         ], Response::HTTP_CREATED);
     }
 
@@ -45,12 +50,16 @@ final class UserController extends Controller
 
         [$user, $key] = $this->userService->login($email, $password);
 
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return new JsonResponse([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'created_at' => $user->created_at->format('d/m/Y H:i:s'),
-            'key' => $key
+            'key' => $key,
+            'access_token' => $token,
+            'token_type' => 'Bearer',
         ], Response::HTTP_OK);
     }
 
