@@ -8,7 +8,7 @@ Route::group(['prefix' => 'users'], function () {
     Route::post('/login', [UserController::class, 'login'])->name('login');
     
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/', [UserController::class, 'index']);
+        Route::get('/', [UserController::class, 'inpdex']);
         Route::put('/update', [UserController::class, 'update']);
         Route::delete('/delete', [UserController::class, 'delete']);
     });
