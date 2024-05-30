@@ -3,18 +3,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 
-Route::group(['prefix' => 'users'], function () {
+Route::group(['prefix' => 'users', 'middleware' => ['throttle:6,1']], function () {
+
     Route::post('/create', [UserController::class, 'store']);
     Route::post('/login', [UserController::class, 'login'])->name('login');
     
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/', [UserController::class, 'inpdex']);
+        Route::get('/', [UserController::class, 'index']);
         Route::put('/update', [UserController::class, 'update']);
         Route::delete('/delete', [UserController::class, 'delete']);
     });
 });
 
-Route::group(['prefix' => 'posts'], function () {
+Route::group(['prefix' => 'posts', 'middleware' => ['throttle:6,1']], function () {
     Route::get('/', [PostController::class, 'index']);
     Route::get('/search', [PostController::class, 'search']);
     Route::post('/create', [PostController::class, 'create']);
