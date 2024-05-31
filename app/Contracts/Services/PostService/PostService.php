@@ -86,11 +86,18 @@ class PostService implements PostServiceInterface
 
         $post->delete();
     }
-    public function getByAuthor(int $key): Array{
-        $postings = $this->posting->where('user_id', $key)->get();
+    public function getByAuthor(string $name): Array{
+        //get the id of the first user that match the name
+        $user = $this->user->where('name', $name)->first();
+        if($user == null){
+            return [];
+        }
+        $user_id = $user->id;
+        $postings = $this->posting->where('user_id', $user_id)->get();
         $posts = $this->post->newQuery()->whereIn('id', $postings->pluck('post_id'))->get();
         $posts = $posts->map(function ($post) {
             return [
+                'id' => $post->id,
                 'title' => $post->title,
                 'content' => $post->content,
             ];

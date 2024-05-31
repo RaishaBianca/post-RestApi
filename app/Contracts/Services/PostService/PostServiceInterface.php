@@ -14,5 +14,5 @@ interface PostServiceInterface
     public function create(int $key, string $title, string $content): Post;
     public function update(int $key, string $title, string $content): Post;
     public function delete(int $key): void;
-    public function getByAuthor(int $key): Array;
+    public function getByAuthor(string $name): Array;
 }

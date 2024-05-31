@@ -98,8 +98,12 @@ final class AuthController extends Controller
     public function getByAuthor(Request $request): JsonResponse
     {
 
-        $key = Auth::id();
-        $posts = $this->postService->getByAuthor($key);
+        $name = $request->header('name');
+        $posts = $this->postService->getByAuthor($name);
+
+        if(empty($posts)){
+            return new JsonResponse(['message' => 'No user or post found'], Response::HTTP_NOT_FOUND);
+        }
 
         return new JsonResponse($posts, Response::HTTP_OK);
     }
